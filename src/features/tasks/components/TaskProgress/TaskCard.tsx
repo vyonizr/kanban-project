@@ -1,7 +1,6 @@
 import type { Task, CSSProperties } from "../../../../types";
 import { TASK_PROGRESS_ID } from "../../../../constants/app";
-import { useRecoilState } from "recoil"; // Ditambahkan
-import { tasksState } from "../../TaskAtoms"; // Ditambahkan
+import { useTasksAction } from "../../hooks/Tasks";
 
 interface TaskCardProps {
   task: Task;
@@ -33,17 +32,7 @@ const getArrowPositionStyle = (progressOrder: number): React.CSSProperties => {
 };
 
 const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
-  const [tasks, setTasks] = useRecoilState<Task[]>(tasksState);
-
-  // Definisikan function ini
-  const completeTask = (taskId: number): void => {
-    const updatedTasks: Task[] = tasks.map((task) =>
-      task.id === taskId
-        ? { ...task, progressOrder: TASK_PROGRESS_ID.COMPLETED }
-        : task
-    );
-    setTasks(updatedTasks);
-  };
+  const { completeTask, moveTaskCard } = useTasksAction();
 
   return (
     <div style={styles.taskCard}>
@@ -70,10 +59,24 @@ const TaskCard = ({ task }: TaskCardProps): JSX.Element => {
       </div>
       <div style={getArrowPositionStyle(task.progressOrder)}>
         {task.progressOrder !== TASK_PROGRESS_ID.NOT_STARTED && (
-          <button className="material-icons">chevron_left</button>
+          <button
+            onClick={() => {
+              moveTaskCard(task.id, -1);
+            }}
+            className="material-icons"
+          >
+            chevron_left
+          </button>
         )}
         {task.progressOrder !== TASK_PROGRESS_ID.COMPLETED && (
-          <button className="material-icons">chevron_right</button>
+          <button
+            onClick={() => {
+              moveTaskCard(task.id, 1);
+            }}
+            className="material-icons"
+          >
+            chevron_right
+          </button>
         )}
       </div>
     </div>
