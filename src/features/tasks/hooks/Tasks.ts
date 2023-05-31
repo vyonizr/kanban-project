@@ -12,6 +12,14 @@ interface useTaskActionType {
     dueDate: string,
     progressOrder: number
   ) => void;
+  editTask: (
+    taskId: number,
+    title: string,
+    detail: string,
+    dueDate: string,
+    progressOrder: number
+  ) => void;
+  deleteTask: (taskId: number) => void;
 }
 
 export const useTasksAction = (): useTaskActionType => {
@@ -51,9 +59,37 @@ export const useTasksAction = (): useTaskActionType => {
     setTasks([...tasks, newTask]);
   };
 
+  const editTask = (
+    taskId: number,
+    title: string,
+    detail: string,
+    dueDate: string,
+    progressOrder: number
+  ): void => {
+    const updatedTasks: Task[] = tasks.map((task) =>
+      task.id === taskId
+        ? {
+            ...task,
+            title,
+            detail,
+            dueDate,
+            progressOrder,
+          }
+        : task
+    );
+    setTasks(updatedTasks);
+  };
+
+  const deleteTask = (taskId: number): void => {
+    const updatedTasks: Task[] = tasks.filter((task) => task.id !== taskId);
+    setTasks(updatedTasks);
+  };
+
   return {
     completeTask,
     moveTaskCard,
     addTask,
+    editTask,
+    deleteTask,
   };
 };
