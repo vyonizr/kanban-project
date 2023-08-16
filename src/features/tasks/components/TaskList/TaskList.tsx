@@ -19,6 +19,7 @@ const TaskList = (): JSX.Element => {
           onClick={(): void => {
             setIsModalOpen(true);
           }}
+          data-testid="add-task-button"
         >
           <span className="material-icons">add</span>Add task
         </button>
